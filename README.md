@@ -30,7 +30,7 @@ function dispatch(action){
 }
 
 function render(){
-	document.innerHTML = state.counter
+	document.innerHTML = state.count
 }
 ```
 
@@ -67,7 +67,6 @@ let state;
 ```
 ```javascript
 function changeState(state, action) {
-
     switch (action.type) {
     
       case 'INCREASE_COUNT':
@@ -78,7 +77,7 @@ function changeState(state, action) {
     }
   }
 
-  function dispatch(action){
+function dispatch(action){
 	state = changeState(state, action)
 	render()
 }
@@ -102,7 +101,6 @@ What would be really nice is if we could say when you pass a state of `undefined
 
 ```javascript
 function changeState(state = { count: 0 }, action) {
-
     switch (action.type) {
     
       case 'INCREASE_COUNT':
@@ -116,9 +114,9 @@ function changeState(state = { count: 0 }, action) {
    Now notice what happens:
 ```javascript
 	dispatch({ type: '@@INIT' })
-		-> { counter: 0 }
-	dispatch({type: 'INCREASE'})
-		-> { counter: 1 }
+		-> { count: 0 }
+	dispatch({type: 'INCREASE_COUNT'})
+		-> { count: 1 }
 ```
 
 Ok, pretty elegant.  How did that work?  Let's take it from the top.
@@ -137,7 +135,7 @@ function changeState(state = { count: 0 }, action) {
     }
   }
 
-  function dispatch(action){
+function dispatch(action){
 	state = changeState(state, action)
 	render()
 }
@@ -149,20 +147,20 @@ function render(){
 dispatch({type: '@@INIT'})
 ```
 
-At the top of the file, we declare but do not assign our state, so it starts off as undefined.  Then at the bottom the file, we dispatch an action of `'@@INIT'`.  This calls our `dispatch` function, and passes it through our initial action.  Dispatch calls the `changeState` reducer.  `changeState` is executed, passing through two local variables: state and action.  Action is defined because we passed `{ type: '@@INIT' }` into dispatch.  And the second argument, `state`, comes from the first line of our file.  However, it's not defined.
+At the top of the file, we declare but do not assign our state, so it starts off as undefined. Then at the bottom the file, we dispatch an action of `'@@INIT'`.  This calls our `dispatch` function, and passes it through our initial action.  Dispatch calls the `changeState` reducer.  `changeState` is executed, passing through two local variables: state and action.  Action is defined because we passed `{ type: '@@INIT' }` into dispatch.  And the second argument, `state`, comes from the first line of our file.  However, it's not defined.
 
 So, with that initial dispatch we are really calling
 
 	changeState(undefined, { type: 'INIT' })
 
 
-And when we look to our `changeState` reducer, its default argument means that when state is undefined, it sets the state argument to `{ count: 0 }`.  Then we hit the last line of our reducer's switch statement, and return this state.  Finally, when the change state reducer returns, dispatch assigns the return value to equal state, thus updating our state to the initial value of `{ count: 0 }`, and the next line in dispatch renders this state in our HTML.
+And when we look to our `changeState` reducer, its default argument means that when state is undefined, it sets the state argument to `{ count: 0 }`.  Then we hit the last line of our reducer's switch statement, and return this state.  Finally, when the `changeState` reducer returns, dispatch assigns the return value to equal state, thus updating our state to the initial value of `{ count: 0 }`, and the next line in dispatch renders this state in our HTML.
 
 Essentially, we take advantage of our state starting off as undefined, and never being undefined again.  This means the reducer's default argument can be used to set up the initial state and never be used again.
 
 
 ## Summary
 
-We learned that by dispatching an initial action of type `'@@INIT'` we get two benefits: an initial rendering of the state, and the ability to set our initial state in our reducer.  We set our initial state in our reducer by using a default argument for the state parameter.  Because state is not initially defined, dispatching an action assigns our state to that default value, and then sets state as the default.
+We learned that by dispatching an initial action of type `'@@INIT'` we get two benefits: an initial rendering of the state and the ability to set our initial state in our reducer.  We set our initial state in our reducer by using a default argument for the state parameter.  Because state is not initially defined, dispatching an action assigns our state to that default value, and then sets state as the default.
 
 <p class='util--hide'>View <a href='https://learn.co/lessons/redux-initial-dispatch'>Redux Initial Dispatch</a> on Learn.co and start learning to code for free.</p>
