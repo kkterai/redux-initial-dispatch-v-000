@@ -15,5 +15,5 @@ function dispatch(action){
 }
 
 function render(){
-    document.setInnerHtml = state.counter
+    document.setInnerHtml = state.count
 }
